@@ -3,7 +3,6 @@ package com.github.t3hnar
 import scala.concurrent.duration.Duration.Infinite
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.reflect.ClassTag
-import scala.util.{ Failure, Success, Try }
 
 /**
  * @author Yaroslav Klymko

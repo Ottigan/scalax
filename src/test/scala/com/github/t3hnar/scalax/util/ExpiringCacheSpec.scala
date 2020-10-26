@@ -2,7 +2,10 @@ package com.github.t3hnar.scalax.util
 
 import org.specs2.mutable.Specification
 import java.util.concurrent.TimeUnit
+
 import org.specs2.specification.Scope
+
+import scala.concurrent.ExecutionContext
 
 /**
  * @author Yaroslav Klymko
@@ -29,7 +32,6 @@ class ExpiringCacheSpec extends Specification {
       cache.map.size must eventually(beEqualTo(1))
       cache.get(1) must beSome("1")
     }
-
     "not return expired values which are not cleaned" in new ExpiringCacheScope {
       cache.map must haveSize(0)
       cache.queryCount mustEqual 0
@@ -43,7 +45,14 @@ class ExpiringCacheSpec extends Specification {
       cache.get(0) must beNone
       cache.map.size must eventually(beEqualTo(1))
     }
-
+    "remove values successfully" in new ExpiringCacheScope {
+      cache.put(0, "0")
+      cache.remove(0) must beSome("0")
+    }
+    "return previous value if duplicate key added" in new ExpiringCacheScope {
+      cache.put(0, "0")
+      cache.put(0, "5") must beSome("0")
+    }
   }
 
   class ExpiringCacheScope extends Scope {
