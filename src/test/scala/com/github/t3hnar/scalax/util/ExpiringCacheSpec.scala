@@ -54,7 +54,7 @@ class ExpiringCacheSpec extends Specification {
       cache.put(0, "0") must beNone
       cache.put(0, "5") must beSome("0")
     }
-    "work correctly when contructed through auxiliary" in new ExpiringCacheScope {
+    "work correctly when constructed through auxiliary" in new ExpiringCacheScope {
       val auxiliaryConstructor = new ExpiringCache[Int, String](FiniteDuration.apply(1, TimeUnit.MILLISECONDS), 5)
       auxiliaryConstructor.put(0, "0")
 
