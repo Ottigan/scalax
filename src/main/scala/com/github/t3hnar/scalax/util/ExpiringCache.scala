@@ -25,7 +25,7 @@ class ExpiringCache[K, V](
 
   private[util] val map: TrieMap[K, ExpiringValue] = TrieMap.empty
 
-  private val lock = new ReentrantLock()
+  private[util] val lock = new ReentrantLock()
 
   def get(key: K): Option[V] = {
     increaseQueryCount()

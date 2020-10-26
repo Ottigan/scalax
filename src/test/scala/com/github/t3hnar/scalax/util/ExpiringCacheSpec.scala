@@ -2,10 +2,10 @@ package com.github.t3hnar.scalax.util
 
 import org.specs2.mutable.Specification
 import java.util.concurrent.TimeUnit
-
 import org.specs2.specification.Scope
-
 import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.FiniteDuration
 
 /**
  * @author Yaroslav Klymko
@@ -45,13 +45,23 @@ class ExpiringCacheSpec extends Specification {
       cache.get(0) must beNone
       cache.map.size must eventually(beEqualTo(1))
     }
-    "remove values successfully" in new ExpiringCacheScope {
+    "function correctly when remove() is invoked" in new ExpiringCacheScope {
       cache.put(0, "0")
       cache.remove(0) must beSome("0")
+      cache.remove(0) must beNone
     }
     "return previous value if duplicate key added" in new ExpiringCacheScope {
-      cache.put(0, "0")
+      cache.put(0, "0") must beNone
       cache.put(0, "5") must beSome("0")
+    }
+    "work correctly when contructed through auxiliary" in new ExpiringCacheScope {
+      val auxiliaryConstructor = new ExpiringCache[Int, String](FiniteDuration.apply(1, TimeUnit.MILLISECONDS), 5)
+      auxiliaryConstructor.put(0, "0")
+
+      cache.unit mustEqual auxiliaryConstructor.unit
+      cache.duration mustEqual auxiliaryConstructor.duration
+      cache.queryOverflow mustEqual auxiliaryConstructor.queryOverflow
+      cache.ec mustEqual auxiliaryConstructor.ec
     }
   }
 
